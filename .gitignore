@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+results/
+work/
+gt/
+*.jsonl
+*.meta.json
+config.yaml

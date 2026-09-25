@@ -1,0 +1,57 @@
+# Example configuration. Copy to config.yaml and adjust.
+# All values are optional; defaults are shown here.
+# Secrets are NEVER stored here -- they come from environment variables
+# (see the *_env keys, which name the env var each integration reads).
+
+# --- disk safety -----------------------------------------------------------
+# Abort before any download if free space is below this many GiB.
+min_free_disk_gb: 5.0
+
+# --- audio / chunking -------------------------------------------------------
+sample_rate: 16000
+window_sec: 15.0          # rolling window length
+hop_sec: 5.0              # step between window starts
+
+# --- Whisper (faster-whisper) ----------------------------------------------
+whisper_model: small      # tiny|base|small|medium -- "large*" is refused
+whisper_device: auto      # auto|cuda|cpu (auto warns if it falls back to CPU)
+whisper_compute_type: auto  # auto -> float16 on GPU, int8 on CPU
+whisper_language: null    # e.g. "en"; null = auto-detect
+whisper_beam_size: 1
+whisper_vad: true         # skip silence inside windows (faster)
+
+# --- chat -------------------------------------------------------------------
+chat_tool: auto           # auto|twitchdownloader|tcd
+chat_snippet_max_messages: 5
+chat_snippet_max_chars: 500
+
+# --- LLM classifier ----------------------------------------------------------
+classifier_provider: anthropic   # anthropic | openai (OpenAI-compatible)
+classifier_model: claude-sonnet-4-5
+classifier_batch_size: 8         # windows per LLM request
+classifier_max_tokens: 1024
+classifier_temperature: 0.0
+classifier_timeout_s: 60.0
+classifier_max_retries: 3
+skip_llm_on_empty: true          # silent+chatless windows auto-label "waiting"
+anthropic_api_key_env: ANTHROPIC_API_KEY
+anthropic_base_url: https://api.anthropic.com
+openai_api_key_env: OPENAI_API_KEY
+openai_base_url: https://api.openai.com/v1
+# For a local Qwen-VL / DeepSeek style server:
+#   classifier_provider: openai
+#   openai_base_url: http://localhost:8000/v1
+#   classifier_model: qwen-vl-plus   # or whatever your server calls it
+
+# --- Twitch Helix -------------------------------------------------------------
+twitch_client_id_env: TWITCH_CLIENT_ID
+twitch_access_token_env: TWITCH_ACCESS_TOKEN
+twitch_api_timeout_s: 30.0
+metadata_required: false   # true = abort if metadata fetch fails
+
+# --- debounce ------------------------------------------------------------------
+debounce_window: 3         # commit only after 2 of last 3 windows agree
+debounce_majority: 2
+
+# --- batch ---------------------------------------------------------------------
+max_vod_minutes: null      # cap processed audio per VOD (e.g. 30 for testing)
